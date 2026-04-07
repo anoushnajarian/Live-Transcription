@@ -1,0 +1,27 @@
+# MATLAB
+*.asv
+*.mex*
+*.mlappinstall
+*.mlpkginstall
+slprj/
+codegen/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Temp files
+*.tmp
+*.bak
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Config with secrets
+config.json
+
+# Generated transcripts
+transcript*.txt

@@ -1,0 +1,22 @@
+{
+    "_comment": "Default configuration for Live Transcription. Copy to config.json and modify as needed.",
+    "SampleRate": 16000,
+    "FrameSize": 1600,
+    "NumChannels": 1,
+    "MinChunkDuration": 3.0,
+    "MaxChunkDuration": 8.0,
+    "ChunkOverlap": 0.5,
+    "TargetChunkDuration": 5.0,
+    "VADThreshold": 3.0,
+    "SilenceTimeout": 0.5,
+    "DefaultProvider": "Whisper (MATLAB)",
+    "Language": "English",
+    "LanguageCode": "en",
+    "GoogleLanguageCode": "en-US",
+    "WhisperModel": "medium",
+    "GoogleApiKey": "",
+    "HuggingFaceModel": "",
+    "MaxTranscriptLines": 100,
+    "CaptionFontSize": 32,
+    "TempDir": ""
+}
