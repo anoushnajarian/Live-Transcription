@@ -4,17 +4,20 @@
 
 ```mermaid
 flowchart TD
-    subgraph App["LiveTranscriptionApp (uifigure)"]
+    subgraph App["LiveTranscriptionApp"]
         direction TB
         subgraph Controls
-            Start & Stop & Clear & Save
+            StartBtn["Start"]
+            StopBtn["Stop"]
+            ClearBtn["Clear"]
+            SaveBtn["Save"]
             LangDD["Language Dropdown"]
             ProvDD["Provider Dropdown"]
             MicDD["Mic Device Dropdown"]
         end
         subgraph Timers
-            CT["CaptureTimer (100ms)"]
-            TT["TranscribeTimer (200ms)"]
+            CT["CaptureTimer 100ms"]
+            TT["TranscribeTimer 200ms"]
         end
         subgraph Status
             Lamp["StatusLamp"]
@@ -26,24 +29,24 @@ flowchart TD
     LangDD -->|sets| LangReg["LanguageRegistry"]
     LangReg -->|code, script, hfModel| Config["Config"]
 
-    CT --> Mic["MicrophoneCapture\n(audioDeviceReader 16kHz)"]
-    Mic --> Chunker["Chunker / VAD"]
+    CT --> Mic["MicrophoneCapture\naudioDeviceReader 16kHz"]
+    Mic --> Chunker["Chunker + VAD"]
     Chunker -->|WAV file| Queue["ChunkQueue"]
 
     TT --> Queue
-    Queue -->|dispatch| STT["STTProvider\n(transcribeChunk)"]
+    Queue -->|dispatch| STT["STTProvider\ntranscribeChunk"]
 
-    STT --> WM["WhisperMatlab\n(native, sync)"]
-    STT --> WP["WhisperPython\n(faster-whisper, async)"]
-    STT --> HF["HuggingFace\n(transformers, async)"]
-    STT --> GS["GoogleSpeech\n(REST / webwrite)"]
+    STT --> WM["WhisperMatlab\nnative, sync"]
+    STT --> WP["WhisperPython\nfaster-whisper, async"]
+    STT --> HF["HuggingFace\ntransformers, async"]
+    STT --> GS["GoogleSpeech\nREST webwrite"]
 
     WM -->|result| Caption
     WP -->|result| Caption
     HF -->|result| Caption
     GS -->|result| Caption
 
-    WM -.->|after sync| Drain["drainAudioBuffer()"]
+    WM -.->|after sync| Drain["drainAudioBuffer"]
     Drain -.-> Chunker
 
     Config -->|language| WM
@@ -51,7 +54,7 @@ flowchart TD
     Config -->|language| HF
     Config -->|language| GS
 
-    FontHelper["FontHelper\n(per-script fonts)"] --> Caption
+    FontHelper["FontHelper\nper-script fonts"] --> Caption
 ```
 
 ## Multi-Language Support
