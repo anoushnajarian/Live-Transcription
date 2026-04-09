@@ -68,18 +68,24 @@ The language dropdown populates from `LanguageRegistry.displayNames()`. When the
 Static class that maps display names to:
 - `code` — ISO 639-1 code (used by Whisper: `en`, `hy`, `es`, ...)
 - `googleCode` — BCP-47 code (used by Google: `en-US`, `hy-AM`, ...)
-- `script` — font script category (`latin`, `armenian`, `cyrillic`, `arabic`, `cjk`, `devanagari`)
+- `script` — font script category (`latin`, `armenian`, `cyrillic`, `arabic`, `cjk`, `devanagari`, `greek`, `hebrew`)
 - `hfModel` — optional HuggingFace model ID for language-specific fine-tuned models
+
+20 languages supported: Arabic, Armenian, Chinese, Dutch, English, French, German, Greek, Hebrew, Hindi, Italian, Japanese, Korean, Persian, Polish, Portuguese, Russian, Spanish, Turkish, Ukrainian.
+
+Fine-tuned HuggingFace models registered for: Armenian (`Chillarmo/whisper-small-hy-AM`), Hebrew (`ivrit-ai/whisper-v2-d3-e3`).
 
 ### FontHelper
 
-Replaces `ArmenianFontHelper` with per-script font candidate lists:
-- **Latin**: Segoe UI, Noto Sans, Helvetica, Arial
-- **Armenian**: Noto Sans Armenian, Sylfaen, Arial Unicode MS
-- **Cyrillic**: Noto Sans, DejaVu Sans, Segoe UI
-- **Arabic**: Noto Sans Arabic, Traditional Arabic
-- **CJK**: Noto Sans CJK, Microsoft YaHei, MS Gothic
-- **Devanagari**: Noto Sans Devanagari, Mangal
+Per-script font candidate lists with system probing:
+- **Latin**: Segoe UI, Noto Sans, DejaVu Sans, Helvetica, Arial
+- **Armenian**: Noto Sans Armenian, Noto Sans, DejaVu Sans, Sylfaen, Arial Unicode MS
+- **Cyrillic**: Noto Sans, DejaVu Sans, Segoe UI, Arial Unicode MS
+- **Arabic**: Noto Sans Arabic, Noto Sans, Segoe UI, Traditional Arabic
+- **CJK**: Noto Sans CJK, Microsoft YaHei, MS Gothic, Malgun Gothic, SimHei
+- **Devanagari**: Noto Sans Devanagari, Noto Sans, Mangal
+- **Greek**: Noto Sans, DejaVu Sans, Segoe UI
+- **Hebrew**: Noto Sans Hebrew, Noto Sans, David
 
 ## Runtime Flow
 
@@ -188,3 +194,16 @@ For Python providers (WhisperPython, HuggingFace):
 - `speechClient` / `speech2text` are **not thread-safe**. Must run synchronously on the main thread.
 - During synchronous transcription (8–19 s), CaptureTimer callbacks are missed. `audioDeviceReader` continues buffering internally. `drainAudioBuffer()` recovers all buffered frames.
 - Python-based providers call external processes via `system()`, which can safely run on `backgroundPool`.
+- `backgroundPool` and `parfeval(backgroundPool, ...)` are base MATLAB (R2021b+) — no Parallel Computing Toolbox required.
+
+## Toolbox Dependencies
+
+| Toolbox | Required? | Used By |
+|---------|-----------|---------|
+| **Audio Toolbox** | Required | `audioDeviceReader`, `audiodevinfo`, `speechClient`, `speech2text` |
+| **Deep Learning Toolbox** | Required for Whisper (MATLAB) | Model inference via `speechClient("whisper")` |
+| **Audio Toolbox Interface for SpeechBrain and Torchaudio Libraries** | Required for Whisper (MATLAB) | Support package bridging `speechClient("whisper")` to PyTorch |
+| **Signal Processing Toolbox** | Optional | `resample()` in offline demo only |
+| **Parallel Computing Toolbox** | Optional | GPU acceleration (`ExecutionEnvironment="gpu"`) |
+
+Python-based providers (WhisperPython, HuggingFace, Google) have no MATLAB toolbox dependencies beyond Audio Toolbox for `audioread`/`audiowrite`.
